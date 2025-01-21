@@ -8,3 +8,4 @@
 | # | Date | Weekday | Phase | Linked Issue | Note | Seed |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 2025-01-01 | Wednesday | init | #1 | Finalize initialization baseline checkpoint 01 | seed-2025-howeverapollo-01 |
+| 2 | 2025-01-21 | Tuesday | init | #2 | Finalize initialization baseline checkpoint 02 | seed-2025-howeverapollo-02 |
