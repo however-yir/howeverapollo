@@ -11,3 +11,4 @@
 | 2 | 2025-01-21 | Tuesday | init | #2 | Finalize initialization baseline checkpoint 02 | seed-2025-howeverapollo-02 |
 | 3 | 2025-02-10 | Monday | init | #1 | Finalize initialization baseline checkpoint 03 | seed-2025-howeverapollo-03 |
 | 4 | 2025-03-02 | Sunday | core | #3 | Deliver core feature slice 04 | seed-2025-howeverapollo-04 |
+| 5 | 2025-03-19 | Wednesday | core | #4 | Deliver core feature slice 05 | seed-2025-howeverapollo-05 |
