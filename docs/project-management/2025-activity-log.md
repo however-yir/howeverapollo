@@ -15,3 +15,4 @@
 | 6 | 2025-04-08 | Tuesday | core | #5 | Deliver core feature slice 06 | seed-2025-howeverapollo-06 |
 | 7 | 2025-04-28 | Monday | core | #3 | Deliver core feature slice 07 | seed-2025-howeverapollo-07 |
 | 8 | 2025-05-18 | Sunday | core | #4 | Deliver core feature slice 08 | seed-2025-howeverapollo-08 |
+| 9 | 2025-06-04 | Wednesday | core | #5 | Deliver core feature slice 09 | seed-2025-howeverapollo-09 |
