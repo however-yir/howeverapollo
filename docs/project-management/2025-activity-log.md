@@ -22,3 +22,4 @@
 | 13 | 2025-08-19 | Tuesday | core | #3 | Deliver core feature slice 13 | seed-2025-howeverapollo-13 |
 | 14 | 2025-09-08 | Monday | fix | #6 | Apply fix and hardening patch 14 | seed-2025-howeverapollo-14 |
 | 15 | 2025-09-28 | Sunday | fix | #6 | Apply fix and hardening patch 15 | seed-2025-howeverapollo-15 |
+| 16 | 2025-10-15 | Wednesday | fix | #6 | Apply fix and hardening patch 16 | seed-2025-howeverapollo-16 |
