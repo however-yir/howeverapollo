@@ -24,3 +24,4 @@
 | 15 | 2025-09-28 | Sunday | fix | #6 | Apply fix and hardening patch 15 | seed-2025-howeverapollo-15 |
 | 16 | 2025-10-15 | Wednesday | fix | #6 | Apply fix and hardening patch 16 | seed-2025-howeverapollo-16 |
 | 17 | 2025-11-04 | Tuesday | test | #7 | Add regression/test evidence checkpoint 17 | seed-2025-howeverapollo-17 |
+| 18 | 2025-11-24 | Monday | test | #7 | Add regression/test evidence checkpoint 18 | seed-2025-howeverapollo-18 |
