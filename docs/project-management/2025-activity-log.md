@@ -26,3 +26,4 @@
 | 17 | 2025-11-04 | Tuesday | test | #7 | Add regression/test evidence checkpoint 17 | seed-2025-howeverapollo-17 |
 | 18 | 2025-11-24 | Monday | test | #7 | Add regression/test evidence checkpoint 18 | seed-2025-howeverapollo-18 |
 | 19 | 2025-12-14 | Sunday | docs | #8 | Update docs/deployment checkpoint 19 | seed-2025-howeverapollo-19 |
+| 20 | 2025-12-31 | Wednesday | docs | #8 | Update docs/deployment checkpoint 20 | seed-2025-howeverapollo-20 |
