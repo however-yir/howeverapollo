@@ -1,3 +1,4 @@
+// Modified by however-yir autonomous driving team.
 export const personal = {
     loginTip: 'Log in to your personal account to use Cloud Profile',
     loginGuide: 'View Login process >>',
@@ -5,7 +6,7 @@ export const personal = {
     cloud: 'Cloud Profile',
     guide: 'Use guide',
     document: 'Product Documentation',
-    community: 'Apollo Developer Community',
+    community: 'HoweverPilot Community',
     technicalSupport: 'Advice and Suggestion',
     faq: 'FAQ',
     general: 'General',
@@ -16,11 +17,11 @@ export const personal = {
     language: 'Language',
     confirm: 'confirm',
     close: 'Close',
-    generalConfirm: 'Send anonymous usage data to help us improve Dreamview',
-    dreamviewVersion: 'Dreamview version',
+    generalConfirm: 'Send anonymous usage data to help us improve HoweverPilot Console',
+    dreamviewVersion: 'HoweverPilot version',
     dockerVersion: 'Docker version',
     copyright: 'Copyright and License',
-    copyrightDetail: 'Apollo is provided under the ',
+    copyrightDetail: 'This distribution is provided under the ',
     globalSetting: 'Global Settings',
 
     tableIndex: 'Order',

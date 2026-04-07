@@ -1,8 +1,10 @@
+// Modified by however-yir autonomous driving team.
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@dreamview/dreamview-theme';
 import { useAppInitContext, IRegistryItem, IAppInitStatus } from '@dreamview/dreamview-core/src/store/AppInitStore';
 import { IconPark, Spin, useImagePrak } from '@dreamview/dreamview-ui';
 import { LoadingOutlined } from '@ant-design/icons';
+import { runtimeConfig } from '../../config/runtimeConfig';
 
 const useStyle = makeStyles((theme) => ({
     'dv-app-loading': {
@@ -75,12 +77,13 @@ function PageLoading() {
         });
     }, []);
 
-    const logo = useImagePrak('welcome_guide_logov2');
+    const fallbackLogo = useImagePrak('welcome_guide_logov2');
+    const logo = runtimeConfig.dreamview.logo_asset || fallbackLogo;
 
     return (
         <div className={classes['dv-app-loading']}>
             <div>
-                <img alt='dreamviewplus' src={logo} />
+                <img alt={runtimeConfig.dreamview.brand_name} src={logo} />
                 <div>
                     {progress.map((item) => (
                         <div

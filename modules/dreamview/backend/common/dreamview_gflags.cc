@@ -16,6 +16,22 @@
 
 #include "modules/dreamview/backend/common/dreamview_gflags.h"
 
+#include <cstdlib>
+#include <string>
+
+namespace {
+
+// Modified by however-yir autonomous driving team.
+std::string GetEnvOrDefault(const char* env_key, const char* default_value) {
+  const char* env_value = std::getenv(env_key);
+  if (env_value == nullptr || env_value[0] == '\0') {
+    return std::string(default_value);
+  }
+  return std::string(env_value);
+}
+
+}  // namespace
+
 DEFINE_string(dreamview_module_name, "dreamview", "dreamview module name");
 
 DEFINE_bool(dreamview_profiling_mode, false, "Run dreamview in profiling mode");
@@ -25,12 +41,13 @@ DEFINE_int32(
     "Dreamview profiling duration in ms. Negative value will not restrict the "
     "profiling time");
 
-DEFINE_string(static_file_dir, "/apollo/modules/dreamview_plus/frontend/dist",
+DEFINE_string(static_file_dir, GetEnvOrDefault("APOLLO_DREAMVIEW_STATIC_DIR",
+                                                "/apollo/modules/dreamview_plus/frontend/dist"),
               "The path to the dreamview distribution directory. The default "
               "value points to built-in version from the Apollo project.");
 
 DEFINE_string(
-    server_ports, "8888",
+    server_ports, GetEnvOrDefault("APOLLO_DREAMVIEW_SERVER_PORTS", "8888"),
     "Comma-separated list of ports to listen on. If the port is SSL, "
     "a letter s must be appended, for example, 80,443s will open "
     "port 80 and port 443.Dreamview always use 8899 and Dreamview Plus"
@@ -91,15 +108,17 @@ DEFINE_string(lidar_height_yaml,
 DEFINE_int32(monitor_msg_pending_queue_size, 10,
              "Max monitor message pending queue size");
 
-DEFINE_string(default_data_collection_config_path,
-              "/apollo/modules/dreamview_plus/conf/data_collection_table.pb.txt",
+DEFINE_string(default_data_collection_config_path, GetEnvOrDefault(
+                  "APOLLO_DV_DATA_COLLECTION_CONFIG",
+                  "/apollo/modules/dreamview_plus/conf/data_collection_table.pb.txt"),
               "Data collection table config path.");
 
 DEFINE_int32(loop_routing_end_to_start_distance_threshold, 10,
              "Loop routing distance threshold: start to end");
 
-DEFINE_string(default_preprocess_config_path,
-              "/apollo/modules/dreamview_plus/conf/preprocess_table.pb.txt",
+DEFINE_string(default_preprocess_config_path, GetEnvOrDefault(
+                  "APOLLO_DV_PREPROCESS_CONFIG",
+                  "/apollo/modules/dreamview_plus/conf/preprocess_table.pb.txt"),
               "Sensor calibration preprocess table config path.");
 
 DEFINE_string(vehicle_calibration_mode, "Vehicle Calibration",
@@ -123,18 +142,24 @@ DEFINE_string(plugin_config_file_name_suffix, "_plugin_config.pb.txt",
 DEFINE_string(plugin_channel_prefix, "/apollo/dreamview/plugins/",
               "plugins must use this as channel prefix");
 
-DEFINE_string(resource_scenario_path, "/.apollo/resources/scenario_sets/",
+DEFINE_string(resource_scenario_path,
+              GetEnvOrDefault("APOLLO_RESOURCE_SCENARIO_PATH",
+                              "/.apollo/resources/scenario_sets/"),
               "Scenario set placement");
 
-DEFINE_string(resource_dynamic_model_path,
-              "/.apollo/resources/dynamic_models/models/",
+DEFINE_string(resource_dynamic_model_path, GetEnvOrDefault(
+                  "APOLLO_RESOURCE_DYNAMIC_MODEL_PATH",
+                  "/.apollo/resources/dynamic_models/models/"),
               "Dynamic Models placement");
 
-DEFINE_string(dynamic_model_root_path, "/.apollo/resources/dynamic_models/",
+DEFINE_string(dynamic_model_root_path, GetEnvOrDefault(
+                  "APOLLO_DYNAMIC_MODEL_ROOT_PATH",
+                  "/.apollo/resources/dynamic_models/"),
               "Dynamic Model root directory");
 
-DEFINE_string(dynamic_model_library_path,
-              "/.apollo/resources/dynamic_models/library/",
+DEFINE_string(dynamic_model_library_path, GetEnvOrDefault(
+                  "APOLLO_DYNAMIC_MODEL_LIBRARY_PATH",
+                  "/.apollo/resources/dynamic_models/library/"),
               "Dynamic Model libs placement");
 
 DEFINE_string(dynamic_model_package_library_path,
@@ -159,16 +184,19 @@ DEFINE_string(gflag_command_arg,
 DEFINE_string(sim_perfect_control, "Simulation Perfect Control",
               "sim perfect control!");
 
-DEFINE_string(resource_record_path, "/.apollo/resources/records/",
+DEFINE_string(resource_record_path, GetEnvOrDefault("APOLLO_RESOURCE_RECORD_PATH",
+                                                    "/.apollo/resources/records/"),
               "Records placement");
 
-DEFINE_string(resource_rtk_record_path, "/apollo/data/log",
+DEFINE_string(resource_rtk_record_path, GetEnvOrDefault(
+                  "APOLLO_RESOURCE_RTK_RECORD_PATH", "/apollo/data/log"),
               "Waypoint Follow Records placement");
 
 DEFINE_string(cyber_recorder_stop_command, "pkill -9 cyber_recorder",
               "stop play recorder");
 
-DEFINE_string(vehicles_config_path, "/apollo/modules/calibration/data",
+DEFINE_string(vehicles_config_path, GetEnvOrDefault("APOLLO_VEHICLES_CONFIG_PATH",
+                                                    "/apollo/modules/calibration/data"),
               "Vehicles config path.");
 
 DEFINE_bool(
@@ -184,7 +212,9 @@ DEFINE_string(valet_parking_command_topic,
 
 DEFINE_string(action_command_topic, "/apollo/external_command/action",
               "Action command topic name.");
-DEFINE_string(data_handler_config_path, "/apollo/modules/dreamview_plus/conf/data_handler.conf",
+DEFINE_string(data_handler_config_path, GetEnvOrDefault(
+                  "APOLLO_DV_DATA_HANDLER_CONFIG",
+                  "/apollo/modules/dreamview_plus/conf/data_handler.conf"),
               "Data handler config path.");
 
 DEFINE_string(data_recorder_command_keyword, "cyber_recorder record",
@@ -200,9 +230,12 @@ DEFINE_string(dv_hmi_modes_config_path,
               "/apollo/modules/dreamview/conf/hmi_modes",
               "Dreamview HMI modes config path.");
 DEFINE_string(dv_plus_hmi_modes_config_path,
-              "/apollo/modules/dreamview_plus/conf/hmi_modes",
+              GetEnvOrDefault("APOLLO_DV_PLUS_HMI_MODES_CONFIG_PATH",
+                              "/apollo/modules/dreamview_plus/conf/hmi_modes"),
               "Dreamview Plus HMI modes config path.");
-DEFINE_string(maps_data_path, "/apollo/modules/map/data", "Maps data path.");
+DEFINE_string(maps_data_path,
+              GetEnvOrDefault("APOLLO_MAPS_DATA_PATH", "/apollo/modules/map/data"),
+              "Maps data path.");
 DEFINE_string(global_components_config_path,
               "/apollo/modules/dreamview/conf/global_components_config.pb.txt",
               "Global components config path.");
@@ -219,7 +252,8 @@ DEFINE_string(terminal_stop_cmd, "pkill -9 -f \"cyber_shell\" ",
 DEFINE_string(cyber_channels_key, "apollo.dreamview.Cyber",
               "Cyber channels key");
 DEFINE_string(vehicle_data_config_filename,
-              "/apollo/modules/dreamview_plus/conf/vehicle_data.pb.txt",
+              GetEnvOrDefault("APOLLO_VEHICLE_DATA_CONFIG_FILENAME",
+                              "/apollo/modules/dreamview_plus/conf/vehicle_data.pb.txt"),
               "Vehicle data config file.");
             
 DEFINE_double(status_publish_interval, 5, "HMI Status publish interval.");
@@ -230,10 +264,13 @@ DEFINE_string(current_mode_db_key, "/apollo/hmi/status:current_mode",
 DEFINE_string(default_hmi_mode, "Default",
               "Default HMI Mode when there is no cache.");
 
-DEFINE_string(default_rtk_record_file, "/apollo/data/log/garage.csv",
+DEFINE_string(default_rtk_record_file,
+              GetEnvOrDefault("APOLLO_DEFAULT_RTK_RECORD_FILE",
+                              "/apollo/data/log/garage.csv"),
               "Default rtk record file.");
 
-DEFINE_string(default_rtk_record_path, "/apollo/data/log/",
+DEFINE_string(default_rtk_record_path, GetEnvOrDefault(
+                  "APOLLO_DEFAULT_RTK_RECORD_PATH", "/apollo/data/log/"),
               "Default rtk record path.");
 
 DEFINE_bool(dv_cpu_profile, false, "enable cpu profile");

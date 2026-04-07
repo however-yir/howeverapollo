@@ -1,7 +1,8 @@
 {
     "name": "@dreamview/dreamview-core",
     "version": "5.0.11",
-    "description": "The core package of dreamview.",
+    "description": "Core package for the HoweverPilot Dreamview-based console.",
+    "modified_by": "Modified by however-yir autonomous driving team.",
     "keywords": [
         "dreamview"
     ],

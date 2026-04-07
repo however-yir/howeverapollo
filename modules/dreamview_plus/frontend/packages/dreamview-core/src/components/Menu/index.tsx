@@ -1,3 +1,4 @@
+// Modified by however-yir autonomous driving team.
 import React, { PropsWithChildren, useCallback, useEffect } from 'react';
 import { OperatePopover, Popover, useImagePrak, IconPark } from '@dreamview/dreamview-ui';
 import {
@@ -18,6 +19,7 @@ import { CURRENT_MODE } from '../../store/HmiStore';
 import IcMoon from './moon.svg';
 import IcSun from './sun.svg';
 import { useChangeTheme } from '../../store/ThemeProviderStore';
+import { MenuOrderKey, runtimeConfig } from '../../config/runtimeConfig';
 
 const logger = Logger.getInstance('Menu');
 
@@ -60,6 +62,12 @@ const ActivatableMenuMemo = React.memo(ActivatableMenu);
 
 type MenuProps = {
     setEnterGuideStateMemo: (currentMode: CURRENT_MODE) => void;
+};
+
+const MENU_ORDER_TO_ENUM: Record<MenuOrderKey, ENUM_MENU_KEY> = {
+    MODE_SETTING: ENUM_MENU_KEY.MODE_SETTING,
+    ADD_PANEL: ENUM_MENU_KEY.ADD_PANEL,
+    PROFILE_MANAGEER: ENUM_MENU_KEY.PROFILE_MANAGEER,
 };
 
 function Menu(props: MenuProps) {
@@ -107,12 +115,18 @@ function Menu(props: MenuProps) {
     }, [isPluginConnected]);
 
     const UserContent = <User setEnterGuideStateMemo={setEnterGuideStateMemo} />;
+    const configuredOrder = runtimeConfig.dreamview.navigation.menu_order;
+    const orderedKeys =
+        configuredOrder && configuredOrder.length > 0
+            ? configuredOrder
+            : (['MODE_SETTING', 'PROFILE_MANAGEER', 'ADD_PANEL'] as MenuOrderKey[]);
 
-    return (
-        <div className={classes['menu-container']}>
-            <ul>
-                <li className={cx(classes['menu-item'], classes.logo)} />
+    const renderMenuByKey = (menuOrderKey: MenuOrderKey) => {
+        const menuKey = MENU_ORDER_TO_ENUM[menuOrderKey];
+        if (menuKey === ENUM_MENU_KEY.MODE_SETTING) {
+            return (
                 <ActivatableMenuMemo
+                    key='mode-setting'
                     popover={<>{tMode('modeSettings')}</>}
                     activeMenuKey={activeMenu}
                     menuKey={ENUM_MENU_KEY.MODE_SETTING}
@@ -120,6 +134,45 @@ function Menu(props: MenuProps) {
                 >
                     <IconPark name='IcGlobalSettingsNormal' />
                 </ActivatableMenuMemo>
+            );
+        }
+
+        if (menuKey === ENUM_MENU_KEY.ADD_PANEL) {
+            return (
+                <ActivatableMenuMemo
+                    key='add-panel'
+                    popover={<>{tAdd('addPanel')}</>}
+                    activeMenuKey={activeMenu}
+                    menuKey={ENUM_MENU_KEY.ADD_PANEL}
+                    onMenuChange={onMenuChange}
+                >
+                    <IconPark name='IcAddPanel' />
+                </ActivatableMenuMemo>
+            );
+        }
+
+        if (menuKey === ENUM_MENU_KEY.PROFILE_MANAGEER && isCertSuccess) {
+            return (
+                <ActivatableMenuMemo
+                    key='profile-manager'
+                    popover={<>{tMode('resourceManager')}</>}
+                    activeMenuKey={activeMenu}
+                    menuKey={ENUM_MENU_KEY.PROFILE_MANAGEER}
+                    onMenuChange={onMenuChange}
+                >
+                    <IconPark name='IcProfileMangerNormal' />
+                </ActivatableMenuMemo>
+            );
+        }
+
+        return null;
+    };
+
+    return (
+        <div className={classes['menu-container']}>
+            <ul>
+                <li className={cx(classes['menu-item'], classes.logo)} />
+                {orderedKeys.map((menuOrderKey) => renderMenuByKey(menuOrderKey))}
             </ul>
             <ul>
                 {/* fixme: 本地无法使用pwa接口，暂时注释 */}
@@ -131,14 +184,6 @@ function Menu(props: MenuProps) {
                 <li onClick={changeTheme} className={cx(classes['menu-item'], classes['change-theme'])}>
                     <div className={classes['theme-btn']}>{theme === 'drak' ? <IcSun /> : <IcMoon />}</div>
                 </li>
-                <ActivatableMenuMemo
-                    popover={<>{tAdd('addPanel')}</>}
-                    activeMenuKey={activeMenu}
-                    menuKey={ENUM_MENU_KEY.ADD_PANEL}
-                    onMenuChange={onMenuChange}
-                >
-                    <IconPark name='IcAddPanel' />
-                </ActivatableMenuMemo>
                 {/* <ActivatableMenuMemo
                     popover={<>Save Panel 快捷键</>}
                     activeMenuKey={activeMenu}
@@ -147,16 +192,6 @@ function Menu(props: MenuProps) {
                 >
                     <IconIcSaveIcHelpNormal />
                 </ActivatableMenuMemo> */}
-                {isCertSuccess && (
-                    <ActivatableMenuMemo
-                        popover={<>{tMode('resourceManager')}</>}
-                        activeMenuKey={activeMenu}
-                        menuKey={ENUM_MENU_KEY.PROFILE_MANAGEER}
-                        onMenuChange={onMenuChange}
-                    >
-                        <IconPark name='IcProfileMangerNormal' />
-                    </ActivatableMenuMemo>
-                )}
                 <li className={cx(classes['menu-item'])}>
                     <OperatePopover
                         content={UserContent}

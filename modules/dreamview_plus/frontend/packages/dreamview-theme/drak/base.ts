@@ -1,11 +1,12 @@
+// Modified by however-yir autonomous driving team.
 export const colors = {
     // 品牌色
-    brand1: '#1252C0',
-    brand2: '#1971E6',
-    brand3: '#3288FA',
-    brand4: '#579FF1',
-    brand5: 'rgba(50,136,250,0.25)',
-    brandTransparent: 'rgba(50,136,250,0.25)',
+    brand1: '#0B3A53',
+    brand2: '#0F5A86',
+    brand3: '#0F6CBD',
+    brand4: '#5B92D9',
+    brand5: 'rgba(15,108,189,0.25)',
+    brandTransparent: 'rgba(15,108,189,0.25)',
 
     // 辅助色-错误
     error1: '#CB2B40',

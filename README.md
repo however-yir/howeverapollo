@@ -1,278 +1,110 @@
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_logo.png)
+# Modified by however-yir autonomous driving team
 
-[![Build Status](http://180.76.142.62:8111/app/rest/builds/buildType:Apollo_Build/statusIcon)](http://180.76.142.62:8111/viewType.html?buildTypeId=Apollo_Build&guest=1)
-[![Simulation Status](https://azure.apollo.auto/dailybuildstatus.svg)](https://azure.apollo.auto/daily-build/public)
+# HWP Apollo (Fork of ApolloAuto/apollo)
 
-```
+本仓库基于 [ApolloAuto/apollo](https://github.com/ApolloAuto/apollo) 进行企业化二次开发，遵循 **“只加不改、优先新增模块”** 原则：
 
-We choose to go to the moon in this decade and do the other things,
+- 主干能力尽量不侵入式修改。
+- 自研能力统一落在 `modules/my_company/*`。
+- 通过配置注入和适配器接入，降低升级与回归风险。
 
-not because they are easy, but because they are hard.
+## 1. 项目用途
 
--- John F. Kennedy, 1962
+本项目用于构建面向量产导向场景的自动驾驶研发平台，覆盖：
 
-```
+- Dreamview 品牌化与信息架构重构。
+- 传感器和外部服务解耦（可替换厂商、可多环境部署）。
+- 感知/规划/控制插件化扩展。
+- 场景回放、CARLA 闭环回归、性能与接口兼容自动化验证。
 
-Welcome to Apollo's GitHub page!
+## 2. 目标车型与业务场景
 
-[Apollo](http://apollo.auto) is a high performance, flexible architecture which accelerates the development, testing, and deployment of Autonomous Vehicles.
+目标车型（当前假设）：
 
-For business and partnership, please visit [our website](http://apollo.auto).
+- 线控底盘中型乘用车平台（支持 steer-by-wire / brake-by-wire / throttle-by-wire）。
+- 支持“仿真模式 + 实车模式”双运行形态。
 
-## Table of Contents
+目标业务场景：
 
-1. [Introduction](#introduction)
-2. [Prerequisites](#prerequisites)
-3. [Individual Versions](#individual-versions)
-4. [Architecture](#architecture)
-5. [Installation](#installation)
-6. [Quick Starts](#quick-starts)
-7. [Documents](#documents)
+- 城市低速园区与限定开放道路。
+- 研发联调、回放验证、安全测试（含故障注入）。
+- 持续交付与多环境发布（dev/staging/prod）。
 
-## Introduction
+## 3. 与 Apollo 上游的关键差异
 
-Apollo is loaded with new modules and features but needs to be calibrated and configured perfectly before you take it for a spin. Please review the prerequisites and installation steps in detail to ensure that you are well equipped to build and launch Apollo. You could also check out Apollo's architecture overview for a greater understanding of Apollo's core technology and platforms.
+### 架构与模块
 
-## Prerequisites
+- 新增 `modules/my_company/*` 作为自研承载层。
+- 新增传感器抽象层，解耦厂商实现。
+- 自研感知通过适配器接入，不直接硬改上游主链路。
+- 新增规划策略插件接口与策略管理器。
+- 控制模块新增“仿真/实车”模式切换和故障注入开关。
 
-**[New 2024-11]** The Apollo platform (stable version) is now upgraded with
-software packages and library dependencies of newer versions including:
+### 配置与部署
 
-1. CUDA upgraded to version 11.8 to support Nvidia Ada Lovelace (40x0 series) GPUs,
-   with NVIDIA driver >= 520.61.05
-2. LibTorch (only for arm64, both CPU and GPU version) bumped to version 1.11.0 accordingly, and for x86_64, still version 1.7.0.
+- 地图路径、存储路径参数化。
+- 外部服务地址改为配置注入。
+- 新增 `dev/staging/prod` 分层配置与运行时生成脚本。
 
-We do not expect a disruption to your current work, but to ease your life of
-migration, you would need to:
+### Dreamview 改造
 
-1. Update NVIDIA driver on your host to version >= 510.61.05.
-   ([Web link](https://www.nvidia.com/Download/index.aspx?lang=en-us))
-2. Pull latest code and run the following commands after restarting and
-   logging into Apollo Development container:
+- Dreamview 前端品牌名与 Logo 替换。
+- 主题色与导航结构按自定义信息架构重排。
+- 前端运行时配置注入（含菜单顺序、外链、品牌配置）。
+
+### 工程质量与测试
+
+- 依赖版本基线文件（Bazel/Node/Python）。
+- 前端安全审计流程（含 npm audit 工作流）。
+- Bazel 新增 sanitizer 构建配置（ASAN/UBSAN/TSAN）。
+- 新增单元测试、场景回放、CARLA 回归、性能基准、接口兼容测试。
+
+### 文档与维护
+
+- 新增拓扑图/数据流图、部署手册、故障排障手册、路线图。
+- 设定每月一次 upstream rebase 节奏（脚本 + CI）。
+
+## 4. 目录说明
+
+- `modules/my_company/`：自研功能主目录。
+- `modules/my_company/config/environments/`：`dev/staging/prod` 分层配置。
+- `scripts/my_company/`：环境配置渲染与启动脚本。
+- `docs/my_company/`：拓扑、部署、排障、路线图、维护策略等文档。
+
+## 5. 快速开始（开发环境）
+
+1. 启动 Apollo 开发容器（沿用上游流程）。
+2. 选择环境并生成运行时配置：
 
 ```bash
-# Remove Bazel output of previous builds
-rm -rf /apollo/.cache/{bazel,build,repos}
+./scripts/my_company/apply_env_config.sh dev
 ```
 
-3. Restart dev container
+3. 使用注入配置启动 Dreamview：
 
 ```bash
-./docker/scripts/dev_start.sh
+./scripts/my_company/start_dreamview.sh dev
 ```
 
----
+4. 运行自研模块测试：
 
-- The vehicle equipped with the by-wire system, including but not limited to brake-by-wire, steering-by-wire, throttle-by-wire and shift-by-wire (Apollo is currently tested on Lincoln MKZ)
-
-- A machine with a 8-core processor and 16GB memory minimum
-
-- NVIDIA Turing GPU / AMD GFX9/RDNA/CDNA GPU is strongly recommended
-
-- Ubuntu 18.04, 20.04, 22.04 are supported
-
-- NVIDIA driver version 520.61.05 and above ([Web link](https://www.nvidia.com/Download/index.aspx?lang=en-us)) or [ROCm v5.1](https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.1/page/Prerequisite_Actions.html) and above.
-
-- Docker-CE version 19.03 and above ([Official doc](https://docs.docker.com/engine/install/ubuntu/))
-
-- NVIDIA Container Toolkit ([Official doc](https://github.com/NVIDIA/nvidia-docker))
-
-**Please note**, it is recommended that you install the versions of Apollo in the following order: **1.0 -> whichever version you would like to test out**. The reason behind this recommendation is that you need to confirm whether individual hardware components and modules are functioning correctly, and clear various version test cases before progressing to a higher and more capable version for your safety and the safety of those around you.
-
-## Individual Versions:
-
-The following diagram highlights the scope and features of each Apollo release:
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_Roadmap_8_0.png)
-
-[**Apollo 1.0:**](docs/11_Hardware%20Integration%20and%20Calibration/%E8%BD%A6%E8%BE%86%E9%9B%86%E6%88%90/%E7%A1%AC%E4%BB%B6%E5%AE%89%E8%A3%85hardware%20installation/apollo_1_0_hardware_system_installation_guide.md)
-
-Apollo 1.0, also referred to as the Automatic GPS Waypoint Following, works in an enclosed venue such as a test track or parking lot. This installation is necessary to ensure that Apollo works perfectly with your vehicle. The diagram below lists the various modules in Apollo 1.0.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_1.png)
-
-[**Apollo 1.5:**](docs/11_Hardware%20Integration%20and%20Calibration/%E8%BD%A6%E8%BE%86%E9%9B%86%E6%88%90/%E7%A1%AC%E4%BB%B6%E5%AE%89%E8%A3%85hardware%20installation/apollo_1_5_hardware_system_installation_guide.md)
-
-Apollo 1.5 is meant for fixed lane cruising. With the addition of LiDAR, vehicles with this version now have better perception of its surroundings and can better map its current position and plan its trajectory for safer maneuvering on its lane. Please note, the modules highlighted in Yellow are additions or upgrades for version 1.5.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_1_5.png)
-
-[**Apollo 2.0:**](docs/11_Hardware%20Integration%20and%20Calibration/%E8%BD%A6%E8%BE%86%E9%9B%86%E6%88%90/%E7%A1%AC%E4%BB%B6%E5%AE%89%E8%A3%85hardware%20installation/apollo_2_0_hardware_system_installation_guide_v1.md#key-hardware-components)
-
-Apollo 2.0 supports vehicles autonomously driving on simple urban roads. Vehicles are able to cruise on roads safely, avoid collisions with obstacles, stop at traffic lights, and change lanes if needed to reach their destination. Please note, the modules highlighted in Red are additions or upgrades for version 2.0.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_2.png)
-
-[**Apollo 2.5:**](docs/11_Hardware%20Integration%20and%20Calibration/%E8%BD%A6%E8%BE%86%E9%9B%86%E6%88%90/%E7%A1%AC%E4%BB%B6%E5%AE%89%E8%A3%85hardware%20installation/apollo_2_5_hardware_system_installation_guide_v1.md)
-
-Apollo 2.5 allows the vehicle to autonomously run on geo-fenced highways with a camera for obstacle detection. Vehicles are able to maintain lane control, cruise and avoid collisions with vehicles ahead of them.
-
-```
-Please note, if you need to test Apollo 2.5; for safety purposes, please seek the help of the
-Apollo Engineering team. Your safety is our #1 priority,
-and we want to ensure Apollo 2.5 was integrated correctly with your vehicle before you hit the road.
+```bash
+bazel test //modules/my_company/...
 ```
 
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_2_5.png)
+## 6. 交付文档入口
 
-[**Apollo 3.0:**](docs/02_Quick%20Start/apollo_3_0_quick_start.md)
+- 模块拓扑与数据流图：`docs/my_company/topology_and_dataflow.md`
+- 部署手册：`docs/my_company/deployment_manual.md`
+- 故障排障手册：`docs/my_company/troubleshooting_manual.md`
+- 路线图：`docs/my_company/roadmap.md`
+- Upstream Rebase 节奏：`docs/my_company/upstream_rebase_policy.md`
 
-Apollo 3.0's primary focus is to provide a platform for developers to build upon in a closed venue low-speed environment. Vehicles are able to maintain lane control, cruise and avoid collisions with vehicles ahead of them.
+## 7. 许可证
 
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_3.0_diagram.png)
+本项目保留并遵循 Apache-2.0 许可证：
 
-[**Apollo 3.5:**](docs/02_Quick%20Start/apollo_3_5_quick_start.md)
+- `LICENSE`
+- `NOTICE`
 
-Apollo 3.5 is capable of navigating through complex driving scenarios such as residential and downtown areas. The car now has 360-degree visibility, along with upgraded perception algorithms to handle the changing conditions of urban roads, making the car more secure and aware. Scenario-based planning can navigate through complex scenarios, including unprotected turns and narrow streets often found in residential areas and roads with stop signs.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_3_5_Architecture.png)
-
-[**Apollo 5.0:**](docs/02_Quick%20Start/apollo_3_5_quick_start.md)
-
-Apollo 5.0 is an effort to support volume production for Geo-Fenced Autonomous Driving.
-The car now has 360-degree visibility, along with upgraded perception deep learning model to handle the changing conditions of complex road scenarios, making the car more secure and aware. Scenario-based planning has been enhanced to support additional scenarios like pull over and crossing bare intersections.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_5_0_diagram1.png)
-
-[**Apollo 5.5:**](docs/02_Quick%20Start/apollo_5_5_quick_start.md)
-
-Apollo 5.5 enhances the complex urban road autonomous driving capabilities of previous Apollo releases, by introducing curb-to-curb driving support. With this new addition, Apollo is now a leap closer to fully autonomous urban road driving. The car has complete 360-degree visibility, along with upgraded perception deep learning model and a brand new prediction model to handle the changing conditions of complex road and junction scenarios, making the car more secure and aware.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_5_5_Architecture.png)
-
-[**Apollo 6.0:**](docs/02_Quick%20Start/apollo_6_0_quick_start.md)
-
-Apollo 6.0 incorporates new deep learning models to enhance the capabilities for certain Apollo modules. This version works seamlessly with new additions of data pipeline services to better serve Apollo developers. Apollo 6.0 is also the first version to integrate certain features as a demonstration of our continuous exploration and experimentation efforts towards driverless technology.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_6_0.png)
-
-**Apollo 7.0:**
-
-Apollo 7.0 incorporates 3 brand new deep learning models to enhance the capabilities for Apollo Perception and Prediction modules. Apollo Studio is introduced in this version, combining with Data Pipeline, to provide a one-stop online development platform to better serve Apollo developers. Apollo 7.0 also publishes the PnC reinforcement learning model training and simulation evaluation service based on previous simulation service.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_7_0.png)
-
-[**Apollo 8.0:**](docs/02_Quick%20Start/apollo_8_0_quick_start.md)
-
-Apollo 8.0 is an effort to provide an extensible software framework and complete development cycle for Autonomous Driving developer. Apollo 8.0 introduces easily-reused “Package” to organize software modules. Apollo 8.0 integrates the whole process of perception development ,by combining model training service, model deployment tool and end-to-end visual validation tool . And another 3 new deep learning models are incorporated in Apollo 8.0 for perception module. Simulation service is upgraded by integrating local simulator in Dreamview to provide powerful debug tool for PnC developer.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_8_0.png)
-
-[**Apollo 9.0:**](https://apollo.baidu.com/docs/apollo/9.0/md_docs_2_xE5_xAE_x89_xE8_xA3_x85_xE6_x8C_x87_xE5_x8D_x97_2_xE5_x8C_x85_xE7_xAE_xA1_xE7_x90_x86_410bb1324792103828eeacd86377c551.html)
-
-Apollo Open Source Platform 9.0 further focuses on enhancing the development and debugging experience, dedicated to provide autonomous driving developers with a unified development tool platform and easy-to-extend PnC and perception software framework interfaces. The new version reshapes the PnC and perception extension development method based on package management. It optimizes component splitting and configuration management according to business logic, simplifying the process of calling. In addition to the component extension method, a more lightweight plugin extension method has been added, simplifying the process of extending. The new version introduces Dreamview Plus, a brand-new developer tool that introduces modes for convenient multi-scenario use, a panel layout customizing visualization, and a resource center providing richer development resources. Furthermore, the LiDAR and Camera detection models in the new version have been upgraded for improved results, and incremental training methods have been opened up for easy extension. At the same time, support for 4D millimeter-wave radar has been added. Finally, the new version is adapted to the ARM architecture, and supports compilation and running on Orin, providing developers with additional device options.
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_9_0.png)
-
-[**Apollo 10.0:**](https://apollo.baidu.com/docs/apollo/latest/md_docs_2_xE5_x8F_x91_xE7_x89_x88_xE8_xAF_xB4_xE6_x98_x8E_2_xE6_x96_xB0_xE7_x89_x88_xE8_xAF_xB4_xE6_x98_x8E.html)
-
-In Apollo 8.0, the concept of package management tailored for user learning scenarios was introduced to enable users to deploy and use Apollo more conveniently and efficiently. In Apollo 9.0, the package management tool was updated to Version 2.0, making it easier for users to conduct secondary development and effortlessly build their own autonomous driving applications based on Apollo. In Apollo 10.0, we realize that autonomous driving cannot remain at the stage of local validation. Instead, it requires a comprehensive upgrade, and needs to be applied to scenarios on a large scale. In terms of performance, the performance and stability of various layers and modules are optimied, and extensive tools are provided to improve optimization efficiency. At the cost level, the hardware costs are recuded by enriching the hardware ecosystem which provides users with more options. Besides, the software development costs are lowered by upgrading the operating system, establishing communication with other frameworks, and reusing ecological software capabilities. Regarding safety, functional safety strategies and functional safety framework capabilities are reinforced. 
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_10_0.png)
-
-[**Apollo 11.0:**]()
-
-Apollo 8.0 introduced the concept of package management for user learning scenarios, making it easier and faster for users to deploy and use Apollo. In Apollo 9.0, we further improved package management with version 2.0, enabling users to more easily develop on top of Apollo and build their own autonomous driving applications. Apollo 10.0 focused on a comprehensive upgrade for large-scale scenario-based applications. In terms of performance, it optimized the performance and stability of various layers and modules, and provided rich tools to improve optimization efficiency. Apollo 11.0 focuses on the large-scale deployment of **functional autonomous vehicles** in high-value scenarios, comprehensively upgrading perception, localization, planning, and development toolchains, significantly lowering the hardware and software development threshold, and helping developers efficiently build end-to-end autonomous driving operating systems.See [Release Notes](./RELEASE.md) for more details.
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_11_0.png)
-
-## Architecture
-
-- **Hardware/ Vehicle Overview**
-
-![](docs/02_Quick%20Start/demo_guide/images/Hardware_overview_3_5.png)
-
-- **Hardware Connection Overview**
-
-![](docs/02_Quick%20Start/demo_guide/images/Hardware_connection_3_5_1.png)
-
-- **Software Overview**
-
-![](docs/02_Quick%20Start/demo_guide/images/Apollo_3_5_software_architecture.png)
-
-## Installation
-
-- [Hardware installation guide](docs/11_Hardware%20Integration%20and%20Calibration/%E8%BD%A6%E8%BE%86%E9%9B%86%E6%88%90/%E7%A1%AC%E4%BB%B6%E5%AE%89%E8%A3%85hardware%20installation/apollo_3_5_hardware_system_installation_guide.md)
-- [Software installation_guide](https://apollo.baidu.com/docs/apollo/9.0/md_docs_2_xE5_xAE_x89_xE8_xA3_x85_xE6_x8C_x87_xE5_x8D_x97_2_xE5_x8C_x85_xE7_xAE_xA1_xE7_x90_x86_410bb1324792103828eeacd86377c551.html) - **This step is required**
-
-Congratulations! You have successfully built out Apollo without Hardware. If you do have a vehicle and hardware setup for a particular version, please pick the Quickstart guide most relevant to your setup:
-
-## Quick Starts:
-
-- [Apollo 10.0 QuickStart Guide](https://apollo.baidu.com/docs/apollo/10.x/md_docs_2_xE5_xAE_x89_xE8_xA3_x85_xE6_x8C_x87_xE5_x8D_x97_2_xE5_xAE_x89_xE8_xA3_x85_xE6_x8C_x87_xE5_x8D_x97.html)
-
-- [Apollo 9.0 QuickStart Guide](https://apollo.baidu.com/docs/apollo/9.x/md_docs_2_xE5_xAE_x89_xE8_xA3_x85_xE6_x8C_x87_xE5_x8D_x97_2_xE5_x8C_x85_xE7_xAE_xA1_xE7_x90_x86_410bb1324792103828eeacd86377c551.html)
-
-- [Apollo 8.0 QuickStart Guide](docs/02_Quick%20Start/apollo_8_0_quick_start.md)
-
-- [Apollo 6.0 QuickStart Guide](docs/02_Quick%20Start/apollo_6_0_quick_start.md)
-
-- [Apollo 5.5 QuickStart Guide](docs/02_Quick%20Start/apollo_5_5_quick_start.md)
-
-- [Apollo 5.0 QuickStart Guide](docs/02_Quick%20Start/apollo_5_0_quick_start.md)
-
-- [Apollo 3.5 QuickStart Guide](docs/02_Quick%20Start/apollo_3_5_quick_start.md)
-
-- [Apollo 3.0 QuickStart Guide](docs/02_Quick%20Start/apollo_3_0_quick_start.md)
-
-- [Apollo 2.5 QuickStart Guide](docs/02_Quick%20Start/apollo_2_5_quick_start.md)
-
-- [Apollo 2.0 QuickStart Guide](docs/02_Quick%20Start/apollo_2_0_quick_start.md)
-
-- [Apollo 1.5 QuickStart Guide](docs/02_Quick%20Start/apollo_1_5_quick_start.md)
-
-- [Apollo 1.0 QuickStart Guide](docs/02_Quick%20Start/apollo_1_0_quick_start.md)
-
-## Documents
-
-- [Installation Instructions](docs/01_Installation%20Instructions/)
-
-- [Quick Start](docs/02_Quick%20Start/)
-
-- [Package Management](docs/03_Package%20Management/)
-
-- [CyberRT](docs/04_CyberRT/)
-
-- [Localization](docs/05_Localization/)
-
-- [Perception](docs/06_Perception/)
-
-- [Prediction](docs/07_Prediction/)
-
-- [Planning](docs/08_Planning/)
-
-- [Decider](docs/09_Decider/)
-
-- [Control](docs/10_Control/)
-
-- [Hardware Integration and Calibration](docs/11_Hardware%20Integration%20and%20Calibration/)
-
-- [Map acquisition](docs/12_Map%20acquisition/)
-
-- [Apollo Tool](docs/13_Apollo%20Tool/)
-
-- [Others](docs/14_Others/)
-
-- [FAQs](docs/15_FAQS/README.md)
-
-## Questions
-
-You are welcome to submit questions and bug reports as [GitHub Issues](https://github.com/ApolloAuto/apollo/issues).
-
-## Copyright and License
-
-Apollo is provided under the [Apache-2.0 license](https://github.com/ApolloAuto/apollo/blob/master/LICENSE).
-
-## Disclaimer
-
-Apollo open source platform only has the source code for models, algorithms and processes, which will be integrated with cybersecurity defense strategy in the deployment for commercialization and productization.
-
-Please refer to the Disclaimer of Apollo in [Apollo's official website](https://developer.apollo.auto/docs/disclaimer.html).
-
-## Connect with us
-
-- [Have suggestions for our GitHub page?](https://github.com/ApolloAuto/apollo/issues)
-- [Twitter](https://twitter.com/apolloplatform)
-- [YouTube](https://www.youtube.com/channel/UC8wR_NX_NShUTSSqIaEUY9Q)
-- [Blog](https://www.medium.com/apollo-auto)
-- [Newsletter](http://eepurl.com/c-mLSz)
-- Interested in our turnKey solutions or partnering with us Mail us at: apollopartner@baidu.com
+上游版权归 Apollo 原始贡献者所有；本仓库仅包含企业化定制与扩展。

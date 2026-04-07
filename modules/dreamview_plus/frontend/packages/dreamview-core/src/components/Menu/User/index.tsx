@@ -1,3 +1,4 @@
+// Modified by however-yir autonomous driving team.
 import React, { useEffect, useMemo, useState } from 'react';
 import { IconPark, useImagePrak } from '@dreamview/dreamview-ui';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +11,7 @@ import { CURRENT_MODE, usePickHmiStore } from '../../../store/HmiStore';
 import showViewLoginModal from '../../WelcomeGuide/showViewLoginModal';
 import { useUserInfoStore } from '../../../store/UserInfoStore';
 import { updateSubscribe } from '../../../store/UserInfoStore/actions';
+import { runtimeConfig } from '../../../config/runtimeConfig';
 
 interface IMenuItem {
     icon: React.ReactNode;
@@ -65,6 +67,8 @@ function User(props: UserProps) {
         dispatch(updateSubscribe(pluginApi));
     };
 
+    const externalServices = runtimeConfig.external_services;
+
     const { menusSetting, menusProfile } = useMemo(
         () => ({
             menusSetting: [
@@ -87,7 +91,7 @@ function User(props: UserProps) {
                     icon: <IconPark name='IcCloudProfile' />,
                     text: t('cloud'),
                     onClick: () => {
-                        window.open('https://apollo.baidu.com/workspace');
+                        window.open(externalServices.workspace_url);
                     },
                 },
             ],
@@ -96,7 +100,7 @@ function User(props: UserProps) {
                     icon: <IconPark name='IcFaq' />,
                     text: t('faq'),
                     onClick: () => {
-                        window.open('https://apollo.baidu.com/community/article/1223');
+                        window.open(externalServices.faq_url);
                     },
                 },
                 {
@@ -110,24 +114,21 @@ function User(props: UserProps) {
                     icon: <IconPark name='IcProductDocumentation' />,
                     text: t('document'),
                     onClick: () => {
-                        //
-                        window.open(
-                            'https://apollo.baidu.com/community/Apollo-Homepage-Document/Apollo_alpha_doc/dreamview',
-                        );
+                        window.open(externalServices.documentation_url);
                     },
                 },
                 {
                     icon: <IconPark name='IcApolloDeveloperCommunity' />,
                     text: t('community'),
                     onClick: () => {
-                        window.open('https://apollo.baidu.com');
+                        window.open(externalServices.community_url);
                     },
                 },
                 {
                     icon: <IconPark name='IcSuggest' />,
                     text: t('technicalSupport'),
                     onClick: () => {
-                        window.open('https://apollo.baidu.com/workspace?modal=feedback');
+                        window.open(externalServices.feedback_url);
                     },
                 },
             ],

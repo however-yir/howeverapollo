@@ -1,6 +1,8 @@
+// Modified by however-yir autonomous driving team.
 import { makeStylesWithProps } from '@dreamview/dreamview-theme';
 import tinycolor from 'tinycolor2';
 import { useImagePrak } from '@dreamview/dreamview-ui';
+import { runtimeConfig } from '@dreamview/dreamview-core/src/config/runtimeConfig';
 
 const useHoc = makeStylesWithProps<{
     logo: string;
@@ -95,6 +97,7 @@ const useHoc = makeStylesWithProps<{
 }));
 
 export default function useStyle() {
-    const [icAddDesktopShortcut, logo] = useImagePrak(['ic_add_desktop_shortcut', 'dreamview']);
+    const [icAddDesktopShortcut, fallbackLogo] = useImagePrak(['ic_add_desktop_shortcut', 'dreamview']);
+    const logo = runtimeConfig.dreamview.logo_asset || fallbackLogo;
     return useHoc({ icAddDesktopShortcut, logo });
 }

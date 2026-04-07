@@ -1,3 +1,4 @@
+/* Modified by however-yir autonomous driving team. */
 const path = require('path');
 
 const makeConfig = require('@dreamview/dreamview-core/config/webpack.section.js');
@@ -28,6 +29,7 @@ const { htmlPath, webPublicPath, packageJson } = require('./path.js');
  * */
 const devServerConfig = async (params) => {
     const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 8080;
+    const proxyTarget = process.env.DREAMVIEW_PROXY_TARGET || 'http://localhost:8888';
 
     // 检测端口是否占用
     const PORT = await detectPort(DEFAULT_PORT);
@@ -44,7 +46,7 @@ const devServerConfig = async (params) => {
             },
             proxy: {
                 '/proto': {
-                    target: 'http://localhost:8888',
+                    target: proxyTarget,
                     pathRewrite: { '^/proto': '/proto' },
                     changeOrigin: true,
                 },

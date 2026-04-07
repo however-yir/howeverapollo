@@ -82,6 +82,20 @@ build:nvidia --cxxopt="-DNVIDIA=1"
 build:prof --linkopt=-lprofiler
 build:prof --cxxopt="-DENABLE_PERF=1"
 
+# Modified by however-yir autonomous driving team.
+# Sanitizer configs for safety-focused C++ diagnostics.
+build:asan --copt=-fsanitize=address
+build:asan --linkopt=-fsanitize=address
+build:asan --copt=-fno-omit-frame-pointer
+
+build:ubsan --copt=-fsanitize=undefined
+build:ubsan --linkopt=-fsanitize=undefined
+build:ubsan --copt=-fno-omit-frame-pointer
+
+build:tsan --copt=-fsanitize=thread
+build:tsan --linkopt=-fsanitize=thread
+build:tsan --copt=-fno-omit-frame-pointer
+
 # Build Apollo with C++ 17 features.
 build:c++17 --cxxopt=-std=c++1z
 # build:c++17 --cxxopt=-stdlib=libc++

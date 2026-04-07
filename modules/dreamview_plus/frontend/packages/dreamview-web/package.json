@@ -1,7 +1,8 @@
 {
     "name": "@dreamview/dreamview-web",
     "version": "3.1.4",
-    "description": "Visualization of the Apollo simulator.",
+    "description": "HoweverPilot web console for simulation and vehicle operations.",
+    "modified_by": "Modified by however-yir autonomous driving team.",
     "author": "adu-sim",
     "main": "src/index.tsx",
     "homepage": "",

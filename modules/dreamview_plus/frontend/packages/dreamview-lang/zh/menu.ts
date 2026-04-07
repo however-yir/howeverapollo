@@ -1,3 +1,4 @@
+// Modified by however-yir autonomous driving team.
 export const personal = {
     loginTip: '登录个人账户',
     loginGuide: '查看登录引导',
@@ -5,7 +6,7 @@ export const personal = {
     cloud: '资源中心',
     guide: '新手引导',
     document: '产品手册',
-    community: 'Apollo开发者社区',
+    community: 'HoweverPilot 开发者社区',
     general: '通用设置',
     privacy: '隐私政策',
     account: '账户设置',
@@ -16,8 +17,8 @@ export const personal = {
     faq: '常见问题',
     confirm: '确认',
     close: '关闭',
-    generalConfirm: '发送匿名使用数据以帮助我们改进Dreamview',
-    dreamviewVersion: 'Dreamview版本',
+    generalConfirm: '发送匿名使用数据以帮助我们改进 HoweverPilot 控制台',
+    dreamviewVersion: 'HoweverPilot 版本',
     dockerVersion: 'Docker版本',
     copyright: '版本和许可',
     copyrightDetail: 'Apollo is provided under the ',

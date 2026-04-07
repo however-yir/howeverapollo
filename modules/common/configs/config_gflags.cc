@@ -16,7 +16,24 @@
 
 #include "modules/common/configs/config_gflags.h"
 
-DEFINE_string(map_dir, "/apollo/modules/map/data/sunnyvale_loop",
+#include <cstdlib>
+#include <string>
+
+namespace {
+
+// Modified by however-yir autonomous driving team.
+std::string GetEnvOrDefault(const char* env_key, const char* default_value) {
+  const char* env_value = std::getenv(env_key);
+  if (env_value == nullptr || env_value[0] == '\0') {
+    return std::string(default_value);
+  }
+  return std::string(env_value);
+}
+
+}  // namespace
+
+DEFINE_string(map_dir, GetEnvOrDefault("APOLLO_MAP_DIR",
+                                       "/apollo/modules/map/data/sunnyvale_loop"),
               "Directory which contains a group of related maps.");
 DEFINE_int32(local_utm_zone_id, 10, "UTM zone id.");
 

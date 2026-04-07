@@ -1,5 +1,7 @@
+// Modified by however-yir autonomous driving team.
 import { makeStylesWithProps } from '@dreamview/dreamview-theme';
 import { useImagePrak } from '@dreamview/dreamview-ui';
+import { runtimeConfig } from '../../config/runtimeConfig';
 
 const useHoc = makeStylesWithProps<{ welcomeGuideLogo: string }>()((theme, props) => {
     const tokens = theme.components.setupPage;
@@ -226,6 +228,7 @@ const useHoc = makeStylesWithProps<{ welcomeGuideLogo: string }>()((theme, props
 });
 
 export default function useStyle() {
-    const welcomeGuideLogo = useImagePrak('welcome_guide_logov2');
+    const fallbackLogo = useImagePrak('welcome_guide_logov2');
+    const welcomeGuideLogo = runtimeConfig.dreamview.logo_asset || fallbackLogo;
     return useHoc({ welcomeGuideLogo });
 }

@@ -1,3 +1,4 @@
+// Modified by however-yir autonomous driving team.
 import * as process from 'process';
 
 declare global {
@@ -5,6 +6,7 @@ declare global {
         SANDBOX_PATHNAME: string;
         DREAMVIEW_VERSION: string;
         __REDUX_DEVTOOLS_EXTENSION__: any;
+        __MY_COMPANY_CONFIG__?: any;
         self: Window;
         dreamviewVersion: string;
         addDreamviewEventListener: (type: string, listener: EventListener) => void;

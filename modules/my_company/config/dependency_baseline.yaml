@@ -1,0 +1,20 @@
+# Modified by however-yir autonomous driving team.
+# Unified dependency baseline for reproducible builds and audits.
+
+bazel: "6.4.0"
+node: "20.11.1"
+yarn: "1.22.22"
+python: "3.10.14"
+clang: "16"
+cmake: "3.27"
+
+security_policy:
+  frontend_audit:
+    tool: "yarn audit"
+    severity_gate: "high"
+    cadence: "per PR"
+  python_audit:
+    tool: "pip-audit"
+    severity_gate: "high"
+    cadence: "weekly"
+  cve_tracking: "docs/my_company/security_audit_log.md"

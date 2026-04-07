@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "modified_by": "however-yir autonomous driving team",
+    "environment": "dev"
+  },
+  "runtime": {
+    "server_ports": "8888",
+    "map_dir": "/apollo/modules/map/data/my_company_dev_track",
+    "maps_data_path": "/apollo/modules/map/data",
+    "resource_record_path": "/apollo/.apollo/resources/records/",
+    "resource_rtk_record_path": "/apollo/data/log",
+    "resource_scenario_path": "/apollo/.apollo/resources/scenario_sets/",
+    "resource_dynamic_model_path": "/apollo/.apollo/resources/dynamic_models/models/",
+    "dynamic_model_root_path": "/apollo/.apollo/resources/dynamic_models/",
+    "dynamic_model_library_path": "/apollo/.apollo/resources/dynamic_models/library/",
+    "default_rtk_record_path": "/apollo/data/log/",
+    "default_rtk_record_file": "/apollo/data/log/dev_garage.csv"
+  },
+  "external_services": {
+    "workspace_url": "https://dev-console.my-company.example/workspace",
+    "faq_url": "https://dev-console.my-company.example/help/faq",
+    "documentation_url": "https://dev-console.my-company.example/docs/dreamview",
+    "community_url": "https://dev-console.my-company.example/community",
+    "feedback_url": "https://dev-console.my-company.example/feedback"
+  },
+  "dreamview": {
+    "brand_name": "HoweverPilot Dev",
+    "short_name": "HWP Dev",
+    "logo_asset": "/brand/hwp-logo.svg",
+    "theme": {
+      "primary": "#0F6CBD",
+      "secondary": "#0B3A53",
+      "accent": "#13B38B"
+    },
+    "navigation": {
+      "menu_order": [
+        "MODE_SETTING",
+        "PROFILE_MANAGEER",
+        "ADD_PANEL"
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<!-- Modified by however-yir autonomous driving team. -->
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B3A53"/>
+      <stop offset="100%" stop-color="#0F6CBD"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#13B38B"/>
+      <stop offset="100%" stop-color="#5BD0B4"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="32" y="32" width="448" height="448" rx="88" fill="url(#bg)"/>
+
+  <path d="M138 360V154h52v76h132v-76h52v206h-52v-82H190v82h-52z" fill="#FFFFFF"/>
+  <path d="M124 402h264" stroke="url(#accent)" stroke-width="18" stroke-linecap="round"/>
+
+  <text x="256" y="438" text-anchor="middle" font-size="44" fill="#FFFFFF"
+        font-family="PingFang SC, Microsoft YaHei, Arial, sans-serif" font-weight="700">
+    HWP
+  </text>
+</svg>
