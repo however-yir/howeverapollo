@@ -1,0 +1,65 @@
+name: apollo-quality-gate
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - README.md
+      - apollo.sh
+      - collect_pre.sh
+      - docs/**
+      - scripts/**
+      - .github/workflows/apollo-quality-gate.yml
+  pull_request:
+    paths:
+      - README.md
+      - apollo.sh
+      - collect_pre.sh
+      - docs/**
+      - scripts/**
+      - .github/workflows/apollo-quality-gate.yml
+  workflow_dispatch:
+
+jobs:
+  docs-and-script-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Shell syntax gate
+        run: |
+          bash -n apollo.sh
+          bash -n collect_pre.sh
+          bash -n scripts/apollo_build.sh
+          bash -n scripts/apollo_test.sh
+          bash -n scripts/deploy_local_sanity_check.sh
+          bash -n scripts/bootstrap.sh
+          bash -n scripts/apollo_clean.sh
+
+      - name: Python utility syntax gate
+        run: |
+          python -m py_compile \
+            scripts/clear.py \
+            scripts/find_all_package.py \
+            scripts/performance_parse.py \
+            scripts/proto_build_generator.py \
+            scripts/record_bag.py \
+            scripts/record_map_data.py
+
+      - name: Docs surface gate
+        run: |
+          test -f README.md
+          test -f docs/README.md
+          test -f docs/MAINPAGE_cn.md
+          test -f docs/pages_structure.yaml
+          test -f scripts/README.md
+          test -f scripts/apollo_lint.sh
