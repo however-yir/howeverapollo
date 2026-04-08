@@ -1,6 +1,7 @@
 # howeverapollo
 
 [![Docs](https://img.shields.io/badge/docs-README-0A7EFA)](https://github.com/however-yir/howeverapollo#readme)
+[![Smoke](https://github.com/however-yir/howeverapollo/actions/workflows/apollo-smoke.yml/badge.svg)](https://github.com/however-yir/howeverapollo/actions/workflows/apollo-smoke.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-16A34A)](./LICENSE)
 [![Status](https://img.shields.io/badge/status-active-2563EB)](https://github.com/however-yir/howeverapollo)
 [![Type](https://img.shields.io/badge/type-fork--customized-F59E0B)](https://github.com/however-yir/howeverapollo)
@@ -21,6 +22,15 @@
 - 亮点：Dreamview 定制、插件化演进空间、CARLA 回归入口、文档化协作流程。
 - 最短运行路径：`bazel build //...`
 - 合规入口：上游归属、许可证和后续差异请优先查看仓库前部说明与 `docs/`。
+
+## 自动驾驶作品线分工
+
+| Repo | 主要角色 | 最适合看什么 |
+| --- | --- | --- |
+| `howevercarla` | 仿真与验证底座 | UE5、场景、可复现实验、验证环境 |
+| `howeverautoware` | ROS 2 车辆栈集成 | 感知/规划/控制集成与回归流程 |
+| `howeverapollo` | 主栈平台工程 | Dreamview、规划控制、平台化改造 |
+| `howeverpilot` | 端侧驾驶软件 | 运行时配置、健康检查、车辆接入 |
 
 ## 目录
 
