@@ -16,6 +16,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python test dependency
+        run: pip install pytest
+
+      - name: Set up Bazelisk
+        uses: bazelbuild/setup-bazelisk@v3
+
       - name: Shell syntax check
         run: |
           bash -n apollo.sh
@@ -31,6 +42,21 @@ jobs:
             scripts/command_checker.py \
             scripts/find_all_package.py \
             scripts/performance_parse.py
+
+      - name: Run Python tests for fork scripts
+        run: pytest tests/howeverapollo -q
+
+      - name: Run minimal Bazel tests
+        env:
+          USE_BAZEL_VERSION: "6.5.0"
+        run: |
+          bazel test \
+            //tests/howeverapollo:command_checker_fast_test \
+            //tests/howeverapollo:find_all_package_fast_test \
+            //tests/howeverapollo:deploy_dry_run_fast_test
+
+      - name: Execute deploy script dry-run
+        run: bash scripts/deploy_local_sanity_check.sh --dry-run
 
       - name: Verify key docs and entry files
         run: |

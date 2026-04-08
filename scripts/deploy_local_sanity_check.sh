@@ -23,58 +23,85 @@
 
 APOLLO_ROOT=$(cd $(dirname $0)/.. && pwd)
 APOLLO_FILE="modules/dreamview"
+DRY_RUN=0
+DO_UNINSTALL=0
 
 . $APOLLO_ROOT/scripts/apollo_base.sh
 
-if [ ! -e "$APOLLO_FILE" ]; then
-  warning "Please run this script under Apollo source root dir."
-  exit 1
-fi
-
-if [ ! -e "$APOLLO_ROOT/.git" ]; then
-  warning "$APOLLO_ROOT seems not a git repo."
-  exit 1
-fi
-
-type curl > /dev/null 2>&1 || {
-  error >&2 "command curl not found, please install it with: sudo apt-get install curl"
-  exit 1
-}
-type perl > /dev/null 2>&1 || {
-  error >&2 "command perl not found, please install it with: sudo apt-get install perl-base"
-  exit 1
-}
-
-function uninstall() {
-  if [ -L "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
-    pushd $APOLLO_ROOT/.git/hooks > /dev/null
-    rm post-commit
-    popd > /dev/null
-    ok "sanity check was removed."
-  fi
-}
-
 while [ $# -gt 0 ]; do
   case "$1" in
-    -u) uninstall && exit 0 ;;
+    -u) DO_UNINSTALL=1 ;;
+    --dry-run) DRY_RUN=1 ;;
     *) ;;
   esac
   shift
 done
+
+function uninstall() {
+  if [ -L "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
+    if [ "$DRY_RUN" -eq 1 ]; then
+      info "[dry-run] would remove $APOLLO_ROOT/.git/hooks/post-commit"
+      return 0
+    fi
+    pushd $APOLLO_ROOT/.git/hooks > /dev/null
+    rm post-commit
+    popd > /dev/null
+    ok "sanity check was removed."
+  elif [ "$DRY_RUN" -eq 1 ]; then
+    info "[dry-run] post-commit hook symlink not found, nothing to remove."
+  fi
+}
+
+if [ "$DO_UNINSTALL" -eq 1 ]; then
+  uninstall
+  exit 0
+fi
+
+if [ "$DRY_RUN" -eq 0 ]; then
+  if [ ! -e "$APOLLO_FILE" ]; then
+    warning "Please run this script under Apollo source root dir."
+    exit 1
+  fi
+
+  if [ ! -e "$APOLLO_ROOT/.git" ]; then
+    warning "$APOLLO_ROOT seems not a git repo."
+    exit 1
+  fi
+
+  type curl > /dev/null 2>&1 || {
+    error >&2 "command curl not found, please install it with: sudo apt-get install curl"
+    exit 1
+  }
+  type perl > /dev/null 2>&1 || {
+    error >&2 "command perl not found, please install it with: sudo apt-get install perl-base"
+    exit 1
+  }
+else
+  info "Dry run mode enabled: skip dependency checks and filesystem mutations."
+fi
 
 HOOKS_URL="http://code.qt.io/cgit/qt/qtrepotools.git/plain/git-hooks"
 HOOKS_DIR=$APOLLO_ROOT/tools/git-hooks
 HOOK_SCRITPS="git_post_commit_hook sanitize-commit"
 
 if [ ! -e $HOOKS_DIR ]; then
-  mkdir -p $HOOKS_DIR
+  if [ "$DRY_RUN" -eq 1 ]; then
+    info "[dry-run] would create directory: $HOOKS_DIR"
+  else
+    mkdir -p $HOOKS_DIR
+  fi
 fi
 
-pushd $HOOKS_DIR > /dev/null || error "Enter $HOOKS_DIR failed."
+if [ "$DRY_RUN" -eq 0 ]; then
+  pushd $HOOKS_DIR > /dev/null || error "Enter $HOOKS_DIR failed."
+fi
 
 for i in $HOOK_SCRITPS; do
   if [ ! -e "$HOOKS_DIR/$i" ]; then
-    #info "pulling hooks: $i ..."
+    if [ "$DRY_RUN" -eq 1 ]; then
+      info "[dry-run] would download $HOOKS_URL/$i"
+      continue
+    fi
     curl -O $HOOKS_URL/$i
     if [ $? -ne 0 ]; then
       error "Failed to pull hooks: $i ."
@@ -83,9 +110,16 @@ for i in $HOOK_SCRITPS; do
   fi
 done
 
-popd > /dev/null
+if [ "$DRY_RUN" -eq 0 ]; then
+  popd > /dev/null
+fi
 
 if [ ! -e "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
+  if [ "$DRY_RUN" -eq 1 ]; then
+    info "[dry-run] would link $HOOKS_DIR/git_post_commit_hook -> $APOLLO_ROOT/.git/hooks/post-commit"
+    ok "Dry run finished."
+    exit 0
+  fi
   pushd $APOLLO_ROOT/.git/hooks > /dev/null || error "Enter target dir failed. "
   #info "deploy hooks..."
   ln -s $HOOKS_DIR/git_post_commit_hook post-commit
