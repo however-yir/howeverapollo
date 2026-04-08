@@ -1,9 +1,26 @@
 # howeverapollo
 
-这是 **howeverapollo** 的中文说明文档。
+[![Docs](https://img.shields.io/badge/docs-README-0A7EFA)](https://github.com/however-yir/howeverapollo#readme)
+[![License](https://img.shields.io/badge/license-Apache--2.0-16A34A)](./LICENSE)
+[![Status](https://img.shields.io/badge/status-active-2563EB)](https://github.com/however-yir/howeverapollo)
+[![Type](https://img.shields.io/badge/type-fork--customized-F59E0B)](https://github.com/however-yir/howeverapollo)
 
-本项目是自动驾驶系统仓库，聚焦感知、定位、规划、控制与工程化交付能力建设。
-仓库当前形态以“可运行 + 可维护 + 可二次开发”为目标，兼顾工程实践与业务扩展。
+> Status: `active`
+>
+> Upstream: `ApolloAuto/apollo`
+>
+> Series: [howevercarla](https://github.com/however-yir/howevercarla) · [howeverautoware](https://github.com/however-yir/howeverautoware) · [howeverpilot](https://github.com/however-yir/howeverpilot)
+
+🔥 面向自动驾驶全栈研发的 Apollo 二次开发主仓，重点落在规划控制、Dreamview 定制与回归验证。  
+🚀 强调“可运行 + 可维护 + 可解释”的工程主线，而不是一次性 demo 式改名 fork。  
+⭐ 适合作为自动驾驶作品线中的中枢仓库，与 `howevercarla`、`howeverautoware`、`howeverpilot` 配合阅读。
+
+## 项目快照
+
+- 定位：自动驾驶主栈中的规划控制与平台工程仓库。
+- 亮点：Dreamview 定制、插件化演进空间、CARLA 回归入口、文档化协作流程。
+- 最短运行路径：`bazel build //...`
+- 合规入口：上游归属、许可证和后续差异请优先查看仓库前部说明与 `docs/`。
 
 ## 目录
 
@@ -81,7 +98,10 @@
 
 1. 克隆仓库：
 
-\\\
+```bash
+git clone https://github.com/however-yir/howeverapollo.git
+cd howeverapollo
+```
 
 2. 按项目类型安装依赖并启动：
 
