@@ -1,4 +1,4 @@
-# howeverapollo
+# howeverapollo - Apollo 自动驾驶工程化平台 | Apollo-based Autonomous Driving Platform
 
 [![Docs](https://img.shields.io/badge/docs-README-0A7EFA)](https://github.com/however-yir/howeverapollo#readme)
 [![Smoke](https://github.com/however-yir/howeverapollo/actions/workflows/apollo-smoke.yml/badge.svg)](https://github.com/however-yir/howeverapollo/actions/workflows/apollo-smoke.yml)
