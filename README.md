@@ -113,18 +113,27 @@ git clone https://github.com/however-yir/howeverapollo.git
 cd howeverapollo
 ```
 
-2. 按项目类型安装依赖并启动：
+2. 首次构建建议先走 bootstrap（降低 Bazel 首次门槛）：
 
 ```bash
-# Bazel 项目
+./scripts/bootstrap_local_dev.sh
+# 真正执行初始化 + 最小构建 + 最小测试
+# ./scripts/bootstrap_local_dev.sh --run
+```
+
+3. 常规构建：
+
+```bash
 bazel build //...
 ```
 
-3. 首次运行建议先执行最小验证：
+4. 首次运行建议先执行最小验证：
 
 - 能否完成依赖安装。
 - 能否成功启动核心流程。
 - 能否通过基础测试或静态检查。
+
+完整说明见：`docs/LOCAL_BOOTSTRAP.md`
 
 ## 7. 配置与环境建议
 
