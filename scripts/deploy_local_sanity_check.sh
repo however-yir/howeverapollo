@@ -25,25 +25,66 @@ APOLLO_ROOT=$(cd $(dirname $0)/.. && pwd)
 APOLLO_FILE="modules/dreamview"
 DRY_RUN=0
 DO_UNINSTALL=0
+JSON_MODE=0
+declare -a ACTIONS=()
 
 . $APOLLO_ROOT/scripts/apollo_base.sh
 
 function print_usage() {
   cat <<EOF
-Usage: $0 [--dry-run] [-u]
+Usage: $0 [--dry-run] [--json] [-u]
   --dry-run    Print actions without changing files or downloading hooks.
+  --json       Emit a JSON summary line at the end of execution.
   -u           Uninstall existing post-commit sanity hook.
 EOF
+}
+
+function record_action() {
+  ACTIONS+=("$1")
+}
+
+function json_escape() {
+  local input="$1"
+  input="${input//\\/\\\\}"
+  input="${input//\"/\\\"}"
+  input="${input//$'\n'/\\n}"
+  input="${input//$'\r'/\\r}"
+  printf '%s' "${input}"
+}
+
+function emit_json() {
+  local status="$1"
+  if [ "$JSON_MODE" -ne 1 ]; then
+    return 0
+  fi
+
+  local actions_json=""
+  local idx=0
+  for action in "${ACTIONS[@]}"; do
+    if [ "$idx" -gt 0 ]; then
+      actions_json+=","
+    fi
+    actions_json+="\"$(json_escape "$action")\""
+    idx=$((idx + 1))
+  done
+
+  printf '{"status":"%s","dry_run":%s,"uninstall":%s,"actions":[%s]}\n' \
+    "$(json_escape "$status")" \
+    "$([ "$DRY_RUN" -eq 1 ] && echo true || echo false)" \
+    "$([ "$DO_UNINSTALL" -eq 1 ] && echo true || echo false)" \
+    "${actions_json}"
 }
 
 while [ $# -gt 0 ]; do
   case "$1" in
     -u) DO_UNINSTALL=1 ;;
     --dry-run) DRY_RUN=1 ;;
+    --json) JSON_MODE=1 ;;
     -h|--help) print_usage; exit 0 ;;
     *)
       error "Unknown argument: $1"
       print_usage
+      emit_json "error"
       exit 2
       ;;
   esac
@@ -54,11 +95,13 @@ function uninstall() {
   if [ -L "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
     if [ "$DRY_RUN" -eq 1 ]; then
       info "[dry-run] would remove $APOLLO_ROOT/.git/hooks/post-commit"
+      record_action "remove_symlink:$APOLLO_ROOT/.git/hooks/post-commit"
       return 0
     fi
     pushd $APOLLO_ROOT/.git/hooks > /dev/null
     rm post-commit
     popd > /dev/null
+    record_action "remove_symlink:$APOLLO_ROOT/.git/hooks/post-commit"
     ok "sanity check was removed."
   elif [ "$DRY_RUN" -eq 1 ]; then
     info "[dry-run] post-commit hook symlink not found, nothing to remove."
@@ -67,6 +110,7 @@ function uninstall() {
 
 if [ "$DO_UNINSTALL" -eq 1 ]; then
   uninstall
+  emit_json "ok"
   exit 0
 fi
 
@@ -100,8 +144,10 @@ HOOK_SCRITPS="git_post_commit_hook sanitize-commit"
 if [ ! -e $HOOKS_DIR ]; then
   if [ "$DRY_RUN" -eq 1 ]; then
     info "[dry-run] would create directory: $HOOKS_DIR"
+    record_action "mkdir:$HOOKS_DIR"
   else
     mkdir -p $HOOKS_DIR
+    record_action "mkdir:$HOOKS_DIR"
   fi
 fi
 
@@ -113,12 +159,16 @@ for i in $HOOK_SCRITPS; do
   if [ ! -e "$HOOKS_DIR/$i" ]; then
     if [ "$DRY_RUN" -eq 1 ]; then
       info "[dry-run] would download $HOOKS_URL/$i"
+      record_action "download:$HOOKS_URL/$i"
       continue
     fi
     curl -O $HOOKS_URL/$i
     if [ $? -ne 0 ]; then
       error "Failed to pull hooks: $i ."
+      emit_json "error"
+      exit 1
     fi
+    record_action "download:$HOOKS_URL/$i"
     chmod +x $i
   fi
 done
@@ -130,16 +180,21 @@ fi
 if [ ! -e "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
   if [ "$DRY_RUN" -eq 1 ]; then
     info "[dry-run] would link $HOOKS_DIR/git_post_commit_hook -> $APOLLO_ROOT/.git/hooks/post-commit"
+    record_action "link:$HOOKS_DIR/git_post_commit_hook->$APOLLO_ROOT/.git/hooks/post-commit"
     ok "Dry run finished."
+    emit_json "ok"
     exit 0
   fi
   pushd $APOLLO_ROOT/.git/hooks > /dev/null || error "Enter target dir failed. "
   #info "deploy hooks..."
   ln -s $HOOKS_DIR/git_post_commit_hook post-commit
   if [ $? -eq 0 ]; then
+    record_action "link:$HOOKS_DIR/git_post_commit_hook->$APOLLO_ROOT/.git/hooks/post-commit"
     ok "Deploy sanity check done."
   else
     error "Failed to deploy sanity check."
+    emit_json "error"
+    exit 1
   fi
   popd > /dev/null
 elif [ -L "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
@@ -147,3 +202,5 @@ elif [ -L "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
 elif [ -f "$APOLLO_ROOT/.git/hooks/post-commit" ]; then
   info "$APOLLO_ROOT/.git/hooks/post-commit hook seems already exists, please backup it and run this script again."
 fi
+
+emit_json "ok"

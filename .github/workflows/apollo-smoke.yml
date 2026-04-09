@@ -27,13 +27,8 @@ jobs:
       - name: Set up Bazelisk
         uses: bazelbuild/setup-bazelisk@v3
 
-      - name: Shell syntax check
-        run: |
-          bash -n apollo.sh
-          bash -n collect_pre.sh
-          bash -n scripts/apollo_build.sh
-          bash -n scripts/apollo_test.sh
-          bash -n scripts/deploy_local_sanity_check.sh
+      - name: Shell lint and syntax checks
+        run: bash scripts/check_shell_scripts.sh
 
       - name: Python syntax check
         run: |
@@ -46,16 +41,13 @@ jobs:
       - name: Run Python tests for fork scripts
         run: pytest tests/howeverapollo -q
 
-      - name: Run minimal Bazel tests
+      - name: Bazel fast test - command checker
         env:
           USE_BAZEL_VERSION: "6.5.0"
         run: |
           for attempt in 1 2 3; do
-            echo "Bazel test attempt ${attempt}/3"
-            if bazel test \
-              //tests/howeverapollo:command_checker_fast_test \
-              //tests/howeverapollo:find_all_package_fast_test \
-              //tests/howeverapollo:deploy_dry_run_fast_test; then
+            echo "Bazel command_checker_fast_test attempt ${attempt}/3"
+            if bazel test //tests/howeverapollo:command_checker_fast_test; then
               exit 0
             fi
             if [ "${attempt}" -lt 3 ]; then
@@ -63,11 +55,48 @@ jobs:
               sleep 20
             fi
           done
-          echo "Bazel test failed after 3 attempts."
+          echo "Bazel command_checker_fast_test failed after 3 attempts."
+          exit 1
+
+      - name: Bazel fast test - package discovery
+        env:
+          USE_BAZEL_VERSION: "6.5.0"
+        run: |
+          for attempt in 1 2 3; do
+            echo "Bazel find_all_package_fast_test attempt ${attempt}/3"
+            if bazel test //tests/howeverapollo:find_all_package_fast_test; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              echo "Bazel test failed, retrying in 20s..."
+              sleep 20
+            fi
+          done
+          echo "Bazel find_all_package_fast_test failed after 3 attempts."
+          exit 1
+
+      - name: Bazel fast test - deploy dry-run
+        env:
+          USE_BAZEL_VERSION: "6.5.0"
+        run: |
+          for attempt in 1 2 3; do
+            echo "Bazel deploy_dry_run_fast_test attempt ${attempt}/3"
+            if bazel test //tests/howeverapollo:deploy_dry_run_fast_test; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              echo "Bazel test failed, retrying in 20s..."
+              sleep 20
+            fi
+          done
+          echo "Bazel deploy_dry_run_fast_test failed after 3 attempts."
           exit 1
 
       - name: Execute deploy script dry-run
         run: bash scripts/deploy_local_sanity_check.sh --dry-run
+
+      - name: Flaky test summary
+        run: python tests/howeverapollo/flaky_report.py
 
       - name: Verify key docs and entry files
         run: |

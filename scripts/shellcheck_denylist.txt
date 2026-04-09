@@ -1,0 +1,1 @@
+# One relative path per line. Files in this list are excluded even if present in the allowlist.

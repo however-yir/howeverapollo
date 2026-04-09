@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import subprocess
 from pathlib import Path
 
@@ -99,3 +100,26 @@ def test_deploy_local_sanity_check_unknown_argument_fails_fast() -> None:
     assert result.returncode == 2
     combined_output = f"{result.stdout}\n{result.stderr}"
     assert "Unknown argument" in combined_output
+
+
+def test_deploy_local_sanity_check_json_summary_in_dry_run() -> None:
+    script_path = REPO_ROOT / "scripts" / "deploy_local_sanity_check.sh"
+
+    result = subprocess.run(
+        ["bash", str(script_path), "--dry-run", "--json"],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    json_line = next((line for line in result.stdout.splitlines() if line.startswith("{")), None)
+    assert json_line is not None
+
+    payload = json.loads(json_line)
+    assert payload["status"] == "ok"
+    assert payload["dry_run"] is True
+    assert payload["uninstall"] is False
+    assert isinstance(payload["actions"], list)
+    assert payload["actions"], "Expected non-empty dry-run action list"
