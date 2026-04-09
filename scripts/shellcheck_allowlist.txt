@@ -1,11 +1,5 @@
-apollo.sh
-collect_pre.sh
-scripts/apollo_build.sh
-scripts/apollo_test.sh
-scripts/deploy_local_sanity_check.sh
-scripts/bootstrap.sh
-scripts/apollo_clean.sh
 scripts/check_shell_scripts.sh
+scripts/deploy_local_sanity_check.sh
 tests/howeverapollo/bazel_command_checker_test.sh
 tests/howeverapollo/bazel_find_all_package_test.sh
 tests/howeverapollo/bazel_deploy_dry_run_test.sh
