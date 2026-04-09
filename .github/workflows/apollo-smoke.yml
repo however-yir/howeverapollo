@@ -43,7 +43,7 @@ jobs:
 
       - name: Bazel fast test - command checker
         env:
-          USE_BAZEL_VERSION: "6.5.0"
+          USE_BAZEL_VERSION: "5.2.0"
         run: |
           for attempt in 1 2 3; do
             echo "Bazel command_checker_fast_test attempt ${attempt}/3"
@@ -60,7 +60,7 @@ jobs:
 
       - name: Bazel fast test - package discovery
         env:
-          USE_BAZEL_VERSION: "6.5.0"
+          USE_BAZEL_VERSION: "5.2.0"
         run: |
           for attempt in 1 2 3; do
             echo "Bazel find_all_package_fast_test attempt ${attempt}/3"
@@ -77,7 +77,7 @@ jobs:
 
       - name: Bazel fast test - deploy dry-run
         env:
-          USE_BAZEL_VERSION: "6.5.0"
+          USE_BAZEL_VERSION: "5.2.0"
         run: |
           for attempt in 1 2 3; do
             echo "Bazel deploy_dry_run_fast_test attempt ${attempt}/3"
