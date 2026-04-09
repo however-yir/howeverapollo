@@ -65,10 +65,19 @@ def extract_record(in_record, output):
 
 
 def main(args):
-    out = open(args.output, 'w') if args.output or sys.stdout
-    for record_file in args.in_record:
-        extract_record(record_file, out)
-    out.close()
+    if args.output:
+        out = open(args.output, 'w')
+        close_out = True
+    else:
+        out = sys.stdout
+        close_out = False
+
+    try:
+        for record_file in args.in_record:
+            extract_record(record_file, out)
+    finally:
+        if close_out:
+            out.close()
 
 
 if __name__ == '__main__':
