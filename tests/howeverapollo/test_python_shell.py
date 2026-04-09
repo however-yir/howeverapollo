@@ -68,3 +68,34 @@ def test_deploy_local_sanity_check_dry_run_executes_successfully() -> None:
     combined_output = f"{result.stdout}\n{result.stderr}"
     assert "Dry run mode enabled" in combined_output
     assert "Dry run finished." in combined_output
+
+
+def test_deploy_local_sanity_check_help_outputs_usage() -> None:
+    script_path = REPO_ROOT / "scripts" / "deploy_local_sanity_check.sh"
+
+    result = subprocess.run(
+        ["bash", str(script_path), "--help"],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert "Usage:" in result.stdout
+
+
+def test_deploy_local_sanity_check_unknown_argument_fails_fast() -> None:
+    script_path = REPO_ROOT / "scripts" / "deploy_local_sanity_check.sh"
+
+    result = subprocess.run(
+        ["bash", str(script_path), "--unknown-flag"],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 2
+    combined_output = f"{result.stdout}\n{result.stderr}"
+    assert "Unknown argument" in combined_output

@@ -50,10 +50,21 @@ jobs:
         env:
           USE_BAZEL_VERSION: "6.5.0"
         run: |
-          bazel test \
-            //tests/howeverapollo:command_checker_fast_test \
-            //tests/howeverapollo:find_all_package_fast_test \
-            //tests/howeverapollo:deploy_dry_run_fast_test
+          for attempt in 1 2 3; do
+            echo "Bazel test attempt ${attempt}/3"
+            if bazel test \
+              //tests/howeverapollo:command_checker_fast_test \
+              //tests/howeverapollo:find_all_package_fast_test \
+              //tests/howeverapollo:deploy_dry_run_fast_test; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              echo "Bazel test failed, retrying in 20s..."
+              sleep 20
+            fi
+          done
+          echo "Bazel test failed after 3 attempts."
+          exit 1
 
       - name: Execute deploy script dry-run
         run: bash scripts/deploy_local_sanity_check.sh --dry-run

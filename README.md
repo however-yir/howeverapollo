@@ -155,6 +155,14 @@ bazel build //...
 - 集成测试覆盖关键接口与主流程。
 - 对高风险改动补充回归用例。
 
+推荐最小本地检查命令：
+
+```bash
+pytest tests/howeverapollo -q
+bazel test //tests/howeverapollo:command_checker_fast_test //tests/howeverapollo:find_all_package_fast_test //tests/howeverapollo:deploy_dry_run_fast_test
+bash scripts/deploy_local_sanity_check.sh --dry-run
+```
+
 ## 9. 发布与协作规范
 
 发布建议：

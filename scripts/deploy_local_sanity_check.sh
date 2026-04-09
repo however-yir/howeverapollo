@@ -28,11 +28,24 @@ DO_UNINSTALL=0
 
 . $APOLLO_ROOT/scripts/apollo_base.sh
 
+function print_usage() {
+  cat <<EOF
+Usage: $0 [--dry-run] [-u]
+  --dry-run    Print actions without changing files or downloading hooks.
+  -u           Uninstall existing post-commit sanity hook.
+EOF
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
     -u) DO_UNINSTALL=1 ;;
     --dry-run) DRY_RUN=1 ;;
-    *) ;;
+    -h|--help) print_usage; exit 0 ;;
+    *)
+      error "Unknown argument: $1"
+      print_usage
+      exit 2
+      ;;
   esac
   shift
 done
