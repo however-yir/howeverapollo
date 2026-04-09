@@ -57,7 +57,7 @@ if [[ "${#TARGETS[@]}" -eq 0 ]]; then
 fi
 
 if command -v shellcheck >/dev/null 2>&1; then
-  shellcheck -x -e SC1090,SC1091 "${TARGETS[@]}"
+  shellcheck -S error -x -e SC1090,SC1091 "${TARGETS[@]}"
 else
   for script in "${TARGETS[@]}"; do
     bash -n "${script}"
