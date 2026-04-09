@@ -196,8 +196,8 @@ def select_static_image_pcd(path, min_distance=5, stop_times=5,
     lidar_subfolder = [x for x in subfolders if '_PointCloud2' in x]
     odometry_subfolder = [x for x in subfolders if'_odometry' in x or '_localization_pose' in x]
     camera_subfolders = [x for x in subfolders if'_image' in x]
-    if len(lidar_subfolder) is not 1 or \
-            len(odometry_subfolder) is not 1:
+    if len(lidar_subfolder) != 1 or \
+            len(odometry_subfolder) != 1:
         raise ValueError('only one main lidar and one Odometry'
                          'sensor is needed for sensor calibration')
 
@@ -257,7 +257,7 @@ def select_static_image_pcd(path, min_distance=5, stop_times=5,
                                                 odometry_idx, check_range=check_range):
                     continue
 
-                if last_idx is -1:
+                if last_idx == -1:
                     last_idx = i
                     last_odometry_idx = odometry_idx
                     candidate_idx.append(i)

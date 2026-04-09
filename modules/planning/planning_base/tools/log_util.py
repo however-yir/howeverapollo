@@ -181,7 +181,7 @@ class MouseEventManager(object):
     def on_click(self, event):
         # if mouse button is not right, return
         # 1: left, 2: middle, 3: right
-        if event.button is not 3:
+        if event.button != 3:
             return
         self.x, self.y = event.xdata, event.ydata
         if self.x is not None:

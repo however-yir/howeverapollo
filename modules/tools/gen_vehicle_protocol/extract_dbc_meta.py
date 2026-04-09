@@ -159,7 +159,7 @@ def extract_dbc_meta(dbc_file, out_file, car_type, black_list, sender_list,
                         var["type"] = "enum"
                         var["enum"] = {}
                         for idx in range(3, len(items) - 1, 2):
-                            enumtype = re.sub('\W+', ' ', items[idx + 1])
+                            enumtype = re.sub(r'\W+', ' ', items[idx + 1])
                             enumtype = enumtype.strip().replace(" ",
                                                                 "_").upper()
                             enumtype = items[2].upper() + "_" + enumtype

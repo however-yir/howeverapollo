@@ -40,13 +40,13 @@ class FileType(Enum):
 
 
 FILE_TYPE_MAP = {
-    '.*\.proto$': FileType.PROTO_FILE,
-    '.*\.pb.txt$': FileType.PROTO_FILE,
-    '.*\.flags?$': FileType.FLAGS_FILE,
-    '.*flags?.conf$': FileType.FLAGS_FILE,
-    '.*\.yaml': FileType.YAML_FILE,
-    '.*\.yml': FileType.YAML_FILE,
-    '.*\.json': FileType.JSON_FILE
+    r'.*\.proto$': FileType.PROTO_FILE,
+    r'.*\.pb.txt$': FileType.PROTO_FILE,
+    r'.*\.flags?$': FileType.FLAGS_FILE,
+    r'.*flags?.conf$': FileType.FLAGS_FILE,
+    r'.*\.yaml': FileType.YAML_FILE,
+    r'.*\.yml': FileType.YAML_FILE,
+    r'.*\.json': FileType.JSON_FILE
 }
 
 
