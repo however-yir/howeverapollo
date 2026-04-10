@@ -86,3 +86,15 @@ modules/studio_connector
 
 #WORKSPACE
 /howeverapollo/
+
+# --- Baseline Ignore Rules ---
+.idea/
+*.iml
+__pycache__/
+*.py[cod]
+.env
+.env.*
+node_modules/
+dist/
+build/
+target/
