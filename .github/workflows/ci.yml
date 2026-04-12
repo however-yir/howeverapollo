@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Repository sanity checks
+        run: |
+          test -f README.md || echo "::warning::README.md not found"
+          test -f LICENSE || echo "::warning::LICENSE not found"
+          if [ -d tests ]; then
+            echo "tests directory present"
+          else
+            echo "::warning::tests directory not found"
+          fi
+          echo "Sanity checks complete"
