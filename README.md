@@ -10,6 +10,12 @@
 >
 > Upstream: `ApolloAuto/apollo`
 >
+> 非官方声明（Non-Affiliation）:
+> 本仓库为社区维护的衍生项目，与上游项目所属组织或其关联公司无隶属、无官方背书关系。
+>
+> 商标声明（Trademark Notice）:
+> 上游项目名称、Logo 与相关商标归其各自权利人所有；本仓库仅用于兼容性与来源说明，不主张其商标权。
+>
 > Series: [howevercarla](https://github.com/however-yir/howevercarla) · [howeverautoware](https://github.com/however-yir/howeverautoware) · [howeverpilot](https://github.com/however-yir/howeverpilot)
 
 🔥 面向自动驾驶全栈研发的 Apollo 二次开发主仓，重点落在规划控制、Dreamview 定制与回归验证。  
